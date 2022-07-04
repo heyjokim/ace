@@ -1,6 +1,6 @@
 {
   "name": "ace",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Network indicator lookup utility",
   "main": "main.js",
   "scripts": {
