@@ -2,6 +2,7 @@
 A quick project put together to learn HTML, CSS, and JavaScript. This app has API endpoint integration with various 3rd party scanner services to query at once.
 
 ![alt text](./images/main-screen.png "Home screen")
+![alt text](./images/settings-menu.png "Settings menu")
 
 ## Installation Instructions
 You can download the binary from the releases page or build locally if you want to
