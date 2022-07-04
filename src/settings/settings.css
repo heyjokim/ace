@@ -1,0 +1,23 @@
+h1 {
+  font-weight: bold;
+}
+
+#window {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#api-form {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+footer {
+  display: flex;
+  justify-content: flex-end;
+}

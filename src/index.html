@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ace</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    <link rel="stylesheet" type="text/css" href="css/photon.min.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+<body>
+    <div class="window" id="window">
+        <header class="toolbar toolbar-header">
+            <div class="toolbar-actions">
+                <div class="btn-group">
+                    <button class="btn btn-default" id="home-go" type="button" title="home">
+                        <span class="icon icon-home"></span>
+                    </button>
+                    <a href="settings/settings.html"><button class="btn btn-default" id="settings-btn" type="button" title="settings">
+                        <span class="icon icon-cog"></span>
+                    </button></a>
+                    <button class="btn btn-default" id="home-fresh" type="button" title="refresh"><span class="icon icon-cw"></span></button>
+                </div>
+            </div>
+        </header>
+        <div id="search-wrapper">
+            <div id="search-container">
+                <input class="searchbar" id='searchbar' type="search" placeholder="ipv4/domain/hash" autofocus="autofocus" spellcheck="false" size="128"></input>
+                <button type="button" class="btn" id="search-btn"><span class="icon icon-search"></span></button>
+            </div>
+        </div>
+
+        <div id="body-window">
+        <nav class="nav-group nav-sidebar">
+            <h5 class="nav-group-title">Tools</h5>
+            <hr>
+            <ul id="nav-list"></ul>
+        </nav>
+        <div class="intel-container">
+            <div class="loader"></div>
+            <div id="intel-result">
+                <pre id="result-rendered"></pre>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script src="js/jsonview.js"></script>
+    <script src="index.js"></script>
+
+</body>
+</html>
