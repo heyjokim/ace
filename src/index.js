@@ -33,9 +33,9 @@ searchTerm.addEventListener('keypress', (event) => {
 function classifyIndicator(ioc) {
   let result = {};
   let x = ioc.replaceAll('[.]', '.');
-  reIPv4 = /^\d+\.\d+\.\d+\.\d+$/i;
-  reHash = /^[A-Fa-f0-9]{32,}$/i;
-  reCertificate = /^[A-Fa-f0-9]{64}$/i; // TODO: will fix this later
+  let reIPv4 = /^\d+\.\d+\.\d+\.\d+$/i;
+  let reHash = /^[A-Fa-f0-9]{32,}$/i;
+  let reCertificate = /^[A-Fa-f0-9]{64}$/i; // TODO: will fix this later
 
   if (reIPv4.test(x)) {
     result['ipaddress'] = x;
@@ -53,16 +53,13 @@ function classifyIndicator(ioc) {
 $(window).on('load', () => {
   loader.style.display = 'none';
   window.portgasAPI
-    .queryAPIKeys()
+    .toolGetStatus()
     .then((result) => {
       for (let [k, v] of Object.entries(result)) {
-        if (v && v.length > 1) {
+        if (v) {
           let nav = $('nav.nav-group > ul');
           let navLink = `<div id=nav-group-list><li><a href="#" id="nav-group-item">${k}</a></li></div>`;
           nav.append(navLink);
-          let obj = {};
-          obj[`active.${k}`] = true;
-          window.portgasAPI.toolSetStatus(obj);
         }
       }
     })

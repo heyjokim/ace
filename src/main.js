@@ -73,7 +73,7 @@ function createWindow() {
   const menu = Menu.buildFromTemplate(MENUTEMPLATE);
   Menu.setApplicationMenu(menu);
 
-  mainWindow.openDevTools({ mode: 'detach' });
+  // mainWindow.openDevTools({ mode: 'detach' });
   mainWindow.loadFile('index.html');
 
   ipcMain.handle('settings:saveKeys', (event, object) => {
@@ -108,10 +108,12 @@ function createWindow() {
     store.delete('results');
     let activeTools = store.get('active');
 
-    let activeToolsUrls = Object.keys(activeTools).map((e) =>
-      srcLookup(object, e)
-    );
-
+    let activeToolsUrls = Object.entries(activeTools).map(([key, value]) => {
+      if (value) {
+        return srcLookup(object, key);
+      }
+    });
+    console.log(activeToolsUrls);
     Promise.allSettled(
       activeToolsUrls.map(async (e) => {
         for (let [key, value] of Object.entries(e)) {
@@ -134,7 +136,7 @@ app.whenReady().then(() => {
 });
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
+  app.quit();
 });
 
 function srcLookup(object, source) {
@@ -311,9 +313,7 @@ function getRequest(options) {
     const req = https
       .request(option, (res) => {
         console.log(
-          `${option.hostname}${option.path}\tstatusCode: ${
-            res.statusCode
-          }\n${JSON.stringify(res.headers)}`
+          `${option.hostname}${option.path}\tstatusCode: ${res.statusCode}`
         );
         let chunks = [];
         if (res.statusCode !== 200) {
