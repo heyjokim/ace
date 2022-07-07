@@ -304,6 +304,7 @@ function srcLookup(object, source) {
       case 'domain':
         queryStatus = true;
         basePath += `/dns/domain/${nodeID}?key=${apiKey}`;
+        break;
     }
   }
 
