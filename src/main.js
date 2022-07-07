@@ -113,7 +113,6 @@ function createWindow() {
         return srcLookup(object, key);
       }
     });
-    console.log(activeToolsUrls);
     Promise.allSettled(
       activeToolsUrls.map(async (e) => {
         for (let [key, value] of Object.entries(e)) {
@@ -208,6 +207,13 @@ function srcLookup(object, source) {
         'Content-Type': 'application/x-www-form-urlencoded',
       });
       break;
+    case 'Shodan':
+      baseHost = 'api.shodan.io';
+      basePath = '';
+      Object.assign(requestHeaders, {
+        Accept: 'application/json',
+      });
+      break;
 
     default:
       console.log(`unsupported ${source}`);
@@ -288,6 +294,16 @@ function srcLookup(object, source) {
         basePath += 'search/terms';
         Object.assign(msgBody, { query: `domain=${nodeID}` });
         break;
+    }
+  } else if (source === 'Shodan') {
+    switch (collectionID) {
+      case 'ipaddress':
+        queryStatus = true;
+        basePath += `/shodan/host/${nodeID}?key=${apiKey}`;
+        break;
+      case 'domain':
+        queryStatus = true;
+        basePath += `/dns/domain/${nodeID}?key=${apiKey}`;
     }
   }
 
