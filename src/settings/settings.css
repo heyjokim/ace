@@ -3,10 +3,6 @@ h1 {
 }
 
 #window {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-  justify-content: space-between;
   overflow-y: auto;
 }
 
@@ -77,6 +73,9 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
+input {
+  width: 50vw;
+}
 /* Rounded sliders */
 .slider.round {
   border-radius: 34px;
@@ -84,4 +83,9 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+
+.sub-form {
+  display: flex;
+  justify-content: space-between;
 }

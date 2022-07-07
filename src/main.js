@@ -214,6 +214,22 @@ function srcLookup(object, source) {
         Accept: 'application/json',
       });
       break;
+    case 'AlienVault':
+      baseHost = 'otx.alienvault.com';
+      basePath = '/api/v1/';
+      Object.assign(requestHeaders, {
+        'X-OTX-API-KEY': apiKey,
+        Accept: 'application/json',
+      });
+      break;
+    case 'MalwareBazaar':
+      baseHost = 'mb-api.abuse.ch';
+      basePath = '/api/v1/';
+      Object.assign(requestHeaders, {
+        'API-KEY': apiKey,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      });
+      break;
 
     default:
       console.log(`unsupported ${source}`);
@@ -305,6 +321,30 @@ function srcLookup(object, source) {
         queryStatus = true;
         basePath += `/dns/domain/${nodeID}?key=${apiKey}`;
         break;
+    }
+  } else if (source === 'AlienVault') {
+    switch (collectionID) {
+      case 'ipaddress':
+        queryStatus = true;
+        basePath += `indicators/IPv4/${nodeID}/general`;
+        break;
+      case 'domain':
+        queryStatus = true;
+        basePath += `indicators/domain/${nodeID}/general`;
+        break;
+      case 'hash':
+        queryStatus = true;
+        basePath += `indicators/file/${nodeID}/analysis`;
+        break;
+    }
+  } else if (source === 'MalwareBazaar') {
+    switch (collectionID) {
+      case 'hash':
+        queryStatus = true;
+        requestMethod = false;
+        Object.assign(msgBody, {
+          query: `query=get_info&hash=${nodeID}`,
+        });
     }
   }
 
