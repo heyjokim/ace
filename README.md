@@ -5,7 +5,7 @@ This app has API endpoint integration with various 3rd party scanner services to
 ![alt text](./images/settings-menu.png "Settings menu")
 
 ## Installation Instructions
-You can download the binary from the releases page ([link](https://github.com/heyjokim/ace/releases)) or build/run locally
+You can download the binary from the releases page ([link](https://github.com/heyjokim/ace/releases)) or build/run locally for latest and greatest.
 
 ## Usage
 1. When the app is launched, open the Settings menu by clicking on the "cog" icon from ace's home screen
