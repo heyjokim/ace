@@ -6,6 +6,11 @@ const resultWindow = document.getElementById('intel-result');
 const navList = document.getElementById('nav-list');
 const rWindow = document.getElementById('result-rendered');
 const loader = document.querySelector('.loader');
+const btnDownload = document.getElementById('home-download');
+
+btnDownload.addEventListener('click', async () => {
+  await window.portgasAPI.downloadResults();
+});
 
 btnSearch.addEventListener('click', () => {
   rWindow.innerHTML = '';
