@@ -10,4 +10,5 @@ contextBridge.exposeInMainWorld('portgasAPI', {
   toolGetStatus: () => ipcRenderer.invoke('settings:getStatus'),
   lookupIOC: (object) => ipcRenderer.sendSync('search:lookupIOC', object),
   lookupResults: () => ipcRenderer.sendSync('search:iocResults'),
+  downloadResults: () => ipcRenderer.invoke('dialog:downloadResults'),
 });
