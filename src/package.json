@@ -1,6 +1,6 @@
 {
   "name": "ace",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Network indicator lookup utility",
   "main": "main.js",
   "projectUrl": "https://github.com/heyjokim/ace",
@@ -37,9 +37,9 @@
   "author": "@heyjokim",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^19.0.7",
-    "electron-packager": "^15.5.1",
-    "electron-builder": "^23.1.0"
+    "electron": "^19.0.8",
+    "electron-builder": "^23.1.0",
+    "electron-packager": "^15.5.1"
   },
   "dependencies": {
     "electron-store": "^8.0.2"
