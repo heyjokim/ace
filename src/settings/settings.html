@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="script-src 'self' 'unsafe-inline';"
+    />
+    <link rel="stylesheet" href="../css/photon.min.css" />
+    <link rel="stylesheet" href="./settings.css" />
+  </head>
+  <body>
+    <div id="window" class="window">
+      <header class="toolbar toolbar-header">
+        <div class="toolbar-actions">
+          <div class="btn-group">
+            <a href="../index.html">
+              <button
+                class="btn btn-default"
+                id="settingsHomeBtn"
+                type="button"
+              >
+                <span class="icon icon-home"></span>
+              </button>
+            </a>
+          </div>
+        </div>
+      </header>
+      <div id="api-form">
+        <div class="sub-form">
+        <h4>VirusTotal</span></h4>
+        <input
+          id="api-VirusTotal"
+          class="osint-field"
+          type="password"
+          value=""
+          placeholder="API"
+        /><label class="switch" id="switch-VirusTotal"><input class="switch-tgl" type='checkbox' id="VirusTotal"><span class='slider round'></span></label>
+      </div>
+      <div class="sub-form">
+        <h4>Greynoise</span></h4>
+        <input
+          id="api-GreyNoise"
+          class="osint-field"
+          type="password"
+          value=""
+          placeholder="API"
+        /><label class="switch" id="switch-GreyNoise"><input class="switch-tgl" type='checkbox' id="GreyNoise"><span class='slider round'></span></label>
+      </div>
+      <div class="sub-form">
+        <h4>PassiveTotal</span></h4>
+        <input
+          id="api-PassiveTotal"
+          class="osint-field"
+          type="password"
+          value=""
+          placeholder="Email:API"
+        /><label class="switch" id="switch-PassiveTotal"><input class="switch-tgl" type='checkbox' id="PassiveTotal"><span class='slider round'></span></label>
+      </div>
+      <div class="sub-form">
+        <h4>censys</span></h4>
+        <input
+          id="api-censys"
+          class="osint-field"
+          type="password"
+          value=""
+          placeholder="API:Secret"
+        /><label class="switch" id="switch-censys"><input class="switch-tgl" type='checkbox' id="censys"><span class='slider round'></span></label>
+      </div>
+      <div class="sub-form">
+        <h4>BinaryEdge</span></h4>
+        <input
+          id="api-BinaryEdge"
+          class="osint-field"
+          type="password"
+          value=""
+          placeholder="API"
+        /><label class="switch" id="switch-BinaryEdge"><input class="switch-tgl" type='checkbox' id="BinaryEdge"><span class='slider round'></span></label>
+      </div>
+      <div class="sub-form">
+        <h4>Hybrid Analysis</span></h4>
+        <input
+          id="api-HybridAnalysis"
+          class="osint-field"
+          type="password"
+          value=""
+          placeholder="API"
+        /><label class="switch" id="switch-HybridAnalysis"><input class="switch-tgl" type='checkbox' id="HybridAnalysis"><span class='slider round'></span></label>
+      </div>
+      <div class="sub-form">
+        <h4>Shodan</span></h4>
+        <input
+          id="api-Shodan"
+          class="osint-field"
+          type="password"
+          value=""
+          placeholder="API"
+        /><label class="switch" id="switch-Shodan"><input class="switch-tgl" type='checkbox' id="Shodan"><span class='slider round'></span></label>
+      </div>
+      <div class="sub-form">
+        <h4>AlienVault</span></h4>
+        <input
+          id="api-AlienVault"
+          class="osint-field"
+          type="password"
+          value=""
+          placeholder="API"
+        /><label class="switch" id="switch-AlienVault"><input class="switch-tgl" type='checkbox' id="AlienVault"><span class='slider round'></span></label>
+      </div>
+      <div class="sub-form">
+        <h4>MalwareBazaar</span></h4>
+        <input
+          id="api-MalwareBazaar"
+          class="osint-field"
+          type="password"
+          value=""
+          placeholder="API"
+        /><label class="switch" id="switch-MalwareBazaar"><input class="switch-tgl" type='checkbox' id="MalwareBazaar"><span class='slider round'></span></label>
+      </div>
+      </div>
+      <footer class="toolbar toolbar-footer">
+        <div class="toolbar-actions">
+          <button
+            type="button"
+            class="btn btn-form btn-negative"
+            id="canceSettingsBtn"
+            onclick="window.history.go(-1); return false;"
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            class="btn btn-form btn-primary"
+            id="saveSettingsBtn"
+          >
+            Save
+          </button>
+        </div>
+      </footer>
+    </div>
+    <script src="./settings.js"></script>
+  </body>
+</html>

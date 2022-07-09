@@ -1,0 +1,150 @@
+/* TODO: add dark theme support */
+
+:root {
+  --background-color-light: white;
+  --text-color-light: black;
+  --background-color-dark: black;
+  --text-color-dark: white;
+  --background-nav-color-light: #f5f5f4;
+}
+
+input:placeholder-shown {
+  font-style: italic;
+}
+
+#search-container {
+  display: flex;
+  margin: 0 auto;
+  box-shadow: 0 1px 3px rgba(23, 23, 23, 0.24);
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  width: 98vw;
+  top: 45px;
+  border-radius: 24px;
+}
+
+#search-container,
+#search-wrapper {
+  background-color: var(--background-color-light);
+  color: var(--background-color-light);
+}
+
+#searchbar {
+  background-color: var(--background-color-light);
+  color: var(--text-color-light);
+}
+
+#search-wrapper {
+  height: auto;
+}
+
+#searchbar,
+#searchbar:focus {
+  outline: none !important;
+  text-decoration: none !important;
+  border-width: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 85vw;
+  height: 32px;
+  text-align: center;
+}
+
+p {
+  position: relative;
+  top: 30px;
+}
+
+.btn {
+  background-color: transparent;
+  display: flex;
+}
+
+.btn:hover {
+  color: red;
+}
+
+.nav-group-item {
+  margin-top: 2px;
+}
+
+.favicon {
+  width: 12px;
+  height: 12px;
+}
+
+.intel-container {
+  width: 100vw;
+  height: 100vh;
+  padding-top: 50px;
+  overflow: auto;
+}
+
+.nav-sidebar {
+  background-color: var(--background-nav-color-light);
+  flex: 1;
+  user-select: none;
+  max-width: 200px;
+  min-width: 150px;
+  overflow-y: auto;
+  margin: 0 auto;
+}
+
+.nav-group > h5 {
+  font-size: 20px;
+}
+
+#nav-list {
+  list-style: none;
+  padding-left: 0;
+}
+
+#nav-list li a {
+  text-decoration: none;
+  color: inherit;
+  margin-left: 2.5vw;
+}
+
+:not(input):not(textarea),
+:not(input):not(textarea)::after,
+:not(input):not(textarea)::before {
+  user-select: auto;
+  cursor: default;
+}
+
+#body-window {
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.nav-group {
+  padding-top: 35px;
+}
+.toolbar {
+  padding-bottom: 42px;
+}
+
+.btn-group {
+  top: 6px;
+}
+
+#intel-result {
+  width: inherit;
+  height: inherit;
+  position: relative;
+  max-height: 100%;
+  overflow: auto;
+  padding-bottom: 10px;
+}
+
+#search-btn {
+  display: none;
+}
+
+.json-container {
+  font-family: Consolas, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New !important;
+  font-size: 14px !important;
+}

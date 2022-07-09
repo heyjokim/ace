@@ -1,0 +1,47 @@
+{
+  "name": "ace",
+  "version": "0.2.0",
+  "description": "Network indicator lookup utility",
+  "main": "main.js",
+  "projectUrl": "https://github.com/heyjokim/ace",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -mwl --x64",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "com.ace.app",
+    "mac": {
+      "icon": "./icons/mac/icon.icns",
+      "category": "public.app-category.utilities",
+      "darkModeSupport": true
+    },
+    "win": {
+      "icon": "./icons/win/icon.ico",
+      "target": [
+        "nsis"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "./icons/png/256x256.png",
+      "synopsis": "Network indicator lookup utility",
+      "category": "Utility"
+    }
+  },
+  "author": "@heyjokim",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^19.0.8",
+    "electron-builder": "^23.1.0",
+    "electron-packager": "^15.5.1"
+  },
+  "dependencies": {
+    "electron-store": "^8.0.2"
+  }
+}
