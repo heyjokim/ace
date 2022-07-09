@@ -1,6 +1,13 @@
 const os = require('os');
 const crypto = require('crypto');
-const { app, BrowserWindow, ipcMain, Menu } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Menu,
+  dialog,
+  Notification,
+} = require('electron');
 const Store = require('electron-store');
 const path = require('path');
 const https = require('https');
@@ -49,9 +56,20 @@ const MENUTEMPLATE = [
           await shell.openExternal('https://github.com/heyjokim');
         },
       },
+      {
+        label: 'Twitter Link',
+        click: async () => {
+          const { shell } = require('electron');
+          await shell.openExternal('https://twitter.com/heyjokim');
+        },
+      },
     ],
   },
 ];
+
+function showNotification(msg) {
+  new Notification({ title: 'Ace', body: msg }).show();
+}
 
 const RANDOMKEYGEN = crypto
   .createHash('md5')
@@ -59,6 +77,28 @@ const RANDOMKEYGEN = crypto
   .digest('hex');
 
 const store = new Store({ encryptionKey: RANDOMKEYGEN });
+
+async function dowloadResults() {
+  const fs = require('fs');
+  const options = {
+    title: 'Download',
+    filters: [{ name: 'Javascript', extensions: ['js', 'json'] }],
+    properties: ['openFile'],
+  };
+
+  const outputFile = await dialog.showSaveDialog(options);
+  if (outputFile.canceled) {
+    return;
+  }
+  const output = store.get('results');
+  fs.writeFile(outputFile.filePath, JSON.stringify(output, null, 4), (err) => {
+    if (err) {
+      console.log(err);
+    } else {
+      showNotification(`file ${outputFile.filePath} created`);
+    }
+  });
+}
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
@@ -73,9 +113,10 @@ function createWindow() {
   const menu = Menu.buildFromTemplate(MENUTEMPLATE);
   Menu.setApplicationMenu(menu);
 
-  // mainWindow.openDevTools({ mode: 'detach' });
+  mainWindow.openDevTools({ mode: 'detach' });
   mainWindow.loadFile('index.html');
 
+  ipcMain.handle('dialog:downloadResults', dowloadResults);
   ipcMain.handle('settings:saveKeys', (event, object) => {
     return store.set(object);
   });
@@ -139,10 +180,10 @@ app.on('window-all-closed', () => {
 });
 
 function srcLookup(object, source) {
-  let collectionID, nodeID;
+  let collectionID, nodeId;
   for (let [key, value] of Object.entries(object)) {
     collectionID = key;
-    nodeID = value;
+    nodeId = value;
   }
   let obj = {};
   let baseHost = '';
@@ -230,7 +271,13 @@ function srcLookup(object, source) {
         'Content-Type': 'application/x-www-form-urlencoded',
       });
       break;
-
+    case 'Triage':
+      baseHost = 'api.tria.ge';
+      basePath = '/v0/';
+      Object.assign(requestHeaders, {
+        Authorization: `Bearer ${apiKey}`,
+      });
+      break;
     default:
       console.log(`unsupported ${source}`);
   }
@@ -238,55 +285,55 @@ function srcLookup(object, source) {
   if (source === 'VirusTotal') {
     switch (collectionID) {
       case 'domain':
-        basePath += 'domains/' + nodeID;
+        basePath += 'domains/' + nodeId;
         queryStatus = true;
         break;
       case 'ipaddress':
-        basePath += 'ip_addresses/' + nodeID;
+        basePath += 'ip_addresses/' + nodeId;
         queryStatus = true;
         break;
       case 'hash':
-        basePath += 'files/' + nodeID;
+        basePath += 'files/' + nodeId;
         queryStatus = true;
         break;
     }
   } else if (source === 'PassiveTotal') {
     switch (collectionID) {
       case 'domain':
-        basePath += 'dns/passive?query=' + nodeID;
+        basePath += 'dns/passive?query=' + nodeId;
         queryStatus = true;
         break;
       case 'ipaddress':
-        basePath += 'services?query=' + nodeID;
+        basePath += 'services?query=' + nodeId;
         queryStatus = true;
         break;
     }
   } else if (source === 'GreyNoise') {
     switch (collectionID) {
       case 'ipaddress':
-        basePath += 'community/' + nodeID;
+        basePath += 'community/' + nodeId;
         queryStatus = true;
         break;
     }
   } else if (source === 'censys') {
     switch (collectionID) {
       case 'ipaddress':
-        basePath += 'v2/hosts/' + nodeID;
+        basePath += 'v2/hosts/' + nodeId;
         queryStatus = true;
         break;
       case 'certificate':
-        basePath += 'v1/view/certificates/' + nodeID;
+        basePath += 'v1/view/certificates/' + nodeId;
         queryStatus = true;
         break;
     }
   } else if (source === 'BinaryEdge') {
     switch (collectionID) {
       case 'ipaddress':
-        basePath += 'query/ip/' + nodeID;
+        basePath += 'query/ip/' + nodeId;
         queryStatus = true;
         break;
       case 'domain':
-        basePath += 'query/domains/dns/' + nodeID;
+        basePath += 'query/domains/dns/' + nodeId;
         queryStatus = true;
         break;
     }
@@ -296,45 +343,45 @@ function srcLookup(object, source) {
         queryStatus = true;
         requestMethod = false;
         basePath += 'search/hash';
-        Object.assign(msgBody, { query: `hash=${nodeID}` });
+        Object.assign(msgBody, { query: `hash=${nodeId}` });
         break;
       case 'ipaddress':
         queryStatus = true;
         requestMethod = false;
         basePath += 'search/terms';
-        Object.assign(msgBody, { query: `host=${nodeID}` });
+        Object.assign(msgBody, { query: `host=${nodeId}` });
         break;
       case 'domain':
         queryStatus = true;
         requestMethod = false;
         basePath += 'search/terms';
-        Object.assign(msgBody, { query: `domain=${nodeID}` });
+        Object.assign(msgBody, { query: `domain=${nodeId}` });
         break;
     }
   } else if (source === 'Shodan') {
     switch (collectionID) {
       case 'ipaddress':
         queryStatus = true;
-        basePath += `/shodan/host/${nodeID}?key=${apiKey}`;
+        basePath += `/shodan/host/${nodeId}?key=${apiKey}`;
         break;
       case 'domain':
         queryStatus = true;
-        basePath += `/dns/domain/${nodeID}?key=${apiKey}`;
+        basePath += `/dns/domain/${nodeId}?key=${apiKey}`;
         break;
     }
   } else if (source === 'AlienVault') {
     switch (collectionID) {
       case 'ipaddress':
         queryStatus = true;
-        basePath += `indicators/IPv4/${nodeID}/general`;
+        basePath += `indicators/IPv4/${nodeId}/general`;
         break;
       case 'domain':
         queryStatus = true;
-        basePath += `indicators/domain/${nodeID}/general`;
+        basePath += `indicators/domain/${nodeId}/general`;
         break;
       case 'hash':
         queryStatus = true;
-        basePath += `indicators/file/${nodeID}/analysis`;
+        basePath += `indicators/file/${nodeId}/analysis`;
         break;
     }
   } else if (source === 'MalwareBazaar') {
@@ -343,8 +390,23 @@ function srcLookup(object, source) {
         queryStatus = true;
         requestMethod = false;
         Object.assign(msgBody, {
-          query: `query=get_info&hash=${nodeID}`,
+          query: `query=get_info&hash=${nodeId}`,
         });
+    }
+  } else if (source === 'Triage') {
+    switch (collectionID) {
+      case 'hash':
+        queryStatus = true;
+        basePath += `search?query=md5:${nodeId}`;
+        break;
+      case 'domain':
+        queryStatus = true;
+        basePath += `search?query=domain:${nodeId}`;
+        break;
+      case 'ipaddress':
+        queryStatus = true;
+        basePath += `search?query=ip:${nodeId}`;
+        break;
     }
   }
 
@@ -369,9 +431,7 @@ function getRequest(options) {
   return new Promise((resolve, reject) => {
     const req = https
       .request(option, (res) => {
-        console.log(
-          `${option.hostname}${option.path}\tstatusCode: ${res.statusCode}`
-        );
+        console.log(`${res.statusCode} - ${option.hostname}${option.path}`);
         let chunks = [];
         if (res.statusCode !== 200) {
           reject(res.statusCode);
