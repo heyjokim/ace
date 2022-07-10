@@ -145,6 +145,46 @@ function createWindow() {
     event.returnValue = store.get('results');
   });
 
+  ipcMain.on('show-context-menu', (event, object) => {
+    const template = [
+      {
+        label: `Convert from Epoch`,
+        click: () => {
+          mainWindow.webContents.send(
+            'context-menu-command',
+            'convert-epoch',
+            object
+          );
+        },
+      },
+      {
+        label: `Convert to IP`,
+        click: () => {
+          mainWindow.webContents.send(
+            'context-menu-command',
+            'convert-int-ip',
+            object
+          );
+        },
+      },
+      { type: 'separator' },
+      {
+        label: `Ace search`,
+        click: () => console.log('WIP'),
+      },
+      {
+        label: `Google search`,
+        click: async () => {
+          const { shell } = require('electron');
+          await shell.openExternal(`https://www.google.com/search?q=${object}`);
+        },
+      },
+    ];
+
+    const menu = Menu.buildFromTemplate(template);
+    menu.popup(BrowserWindow.fromWebContents(event.sender));
+  });
+
   ipcMain.on('search:lookupIOC', (event, object) => {
     store.delete('results');
     let activeTools = store.get('active');
