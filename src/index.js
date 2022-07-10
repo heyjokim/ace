@@ -8,6 +8,40 @@ const rWindow = document.getElementById('result-rendered');
 const loader = document.querySelector('.loader');
 const btnDownload = document.getElementById('home-download');
 
+window.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+
+  const getHighlightedText = () => {
+    let s = '';
+    if (window.getSelection) {
+      s = window.getSelection().toString();
+    } else if (document.selection && document.selection.type != 'Control') {
+      s = document.selection.createRange().text;
+    }
+    return s;
+  };
+
+  let s = getHighlightedText();
+
+  if (!s) {
+    return;
+  }
+
+  window.portgasAPI.showContextMenu(s);
+  window.portgasAPI.returnContextMenuData((event, type, object) => {
+    let d;
+    switch (type) {
+      case 'convert-epoch':
+        d = convertEpoch(object);
+        e.target.innerHTML += ` (${d})`;
+        break;
+      case 'convert-int-ip':
+        d = int2ip(object);
+        e.target.innerHTML += ` (${d})`;
+    }
+  });
+});
+
 btnDownload.addEventListener('click', async () => {
   await window.portgasAPI.downloadResults();
 });
@@ -89,4 +123,23 @@ function createTree(object) {
   const tree = jsonview.create(object);
   jsonview.render(tree, rWindow);
   jsonview.expand(tree);
+}
+
+function convertEpoch(i) {
+  if (i < 10000000000) {
+    i *= 1000;
+  }
+  return new Date(i).toUTCString();
+}
+
+function int2ip(ipInt) {
+  return (
+    (ipInt >>> 24) +
+    '.' +
+    ((ipInt >> 16) & 255) +
+    '.' +
+    ((ipInt >> 8) & 255) +
+    '.' +
+    (ipInt & 255)
+  );
 }

@@ -19,7 +19,7 @@ input:placeholder-shown {
   position: absolute;
   justify-content: center;
   align-items: center;
-  width: 98vw;
+  width: 100vw;
   top: 45px;
   border-radius: 24px;
 }
