@@ -113,7 +113,7 @@ function createWindow() {
   const menu = Menu.buildFromTemplate(MENUTEMPLATE);
   Menu.setApplicationMenu(menu);
 
-  mainWindow.openDevTools({ mode: 'detach' });
+  // mainWindow.openDevTools({ mode: 'detach' });
   mainWindow.loadFile('index.html');
 
   ipcMain.handle('dialog:downloadResults', dowloadResults);
