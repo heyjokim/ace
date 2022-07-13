@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Ace</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-    <link rel="stylesheet" type="text/css" href="css/photon.min.css">
-    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="./css/photon.min.css">
+    <link rel="stylesheet" type="text/css" href="./css/styles.css">
 </head>
 <body>
     <div class="window" id="window">
@@ -21,11 +21,16 @@
                 </div>
             </div>
         </header>
-        <div id="search-wrapper">
-            <div id="search-container">
-                <input class="searchbar" id='searchbar' type="search" placeholder="ipv4/domain/hash" autofocus="autofocus" spellcheck="false" size="128"></input>
-                <button type="button" class="btn" id="search-btn"><span class="icon icon-search"></span></button>
-            </div>
+        <div id="search-container">
+            <select name="search-op" id="search-op">
+                <option value="any">any</option>
+                <option value="md5">md5</option>
+                <option value="ip">ip</option>
+                <option value="dns">dns</option>
+                <option value="domain">domain</option>
+            </select>
+            <input class="searchbar" id='searchbar' type="search" placeholder="Search" autofocus="autofocus" spellcheck="false" size="128"></input>
+            <button type="button" class="btn" id="search-btn"><span class="icon icon-search"></span></button>
         </div>
 
         <div id="body-window">
@@ -42,9 +47,9 @@
         </div>
     </div>
     </div>
-    <script src="js/jquery-3.6.0.min.js"></script>
-    <script src="js/jsonview.js"></script>
-    <script src="index.js"></script>
+    <script src="./js/jquery-3.6.0.min.js"></script>
+    <script src="./js/jsonview.js"></script>
+    <script src="./index.js"></script>
 
 </body>
 </html>

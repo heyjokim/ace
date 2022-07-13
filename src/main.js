@@ -113,7 +113,7 @@ function createWindow() {
   const menu = Menu.buildFromTemplate(MENUTEMPLATE);
   Menu.setApplicationMenu(menu);
 
-  // mainWindow.openDevTools({ mode: 'detach' });
+  mainWindow.openDevTools({ mode: 'detach' });
   mainWindow.loadFile('index.html');
 
   ipcMain.handle('dialog:downloadResults', dowloadResults);
@@ -187,18 +187,20 @@ function createWindow() {
 
   ipcMain.on('search:lookupIOC', (event, object) => {
     store.delete('results');
-    let activeTools = store.get('active');
-
-    let activeToolsUrls = Object.entries(activeTools).map(([key, value]) => {
-      if (value) {
-        return srcLookup(object, key);
-      }
+    let toolLists = store.get('active');
+    let activeTools = Object.keys(toolLists).filter((e) => toolLists[e]);
+    let activeToolsUrls = activeTools.map((e) => {
+      return srcLookup(object, e);
     });
+
+    let requestUrls = getRequestUrls(activeToolsUrls.filter((e) => e));
+
     Promise.allSettled(
-      activeToolsUrls.map(async (e) => {
+      requestUrls.map(async (e) => {
         for (let [key, value] of Object.entries(e)) {
+          let paths = value.path.replaceAll('.', '-').replace(/\?key=.+/, '');
           let intelResponse = await getRequest(value);
-          store.set(`results.${key}`, intelResponse);
+          store.set(`results.${key}.${paths}`, intelResponse);
         }
       })
     ).then(() => {
@@ -226,6 +228,8 @@ function srcLookup(object, source) {
     nodeId = value;
   }
   let obj = {};
+  obj[source] = {};
+  let urls = [];
   let baseHost = '';
   let basePath = '';
   let apiKey = store.get(`api.${source}`);
@@ -325,127 +329,129 @@ function srcLookup(object, source) {
   if (source === 'VirusTotal') {
     switch (collectionID) {
       case 'domain':
-        basePath += 'domains/' + nodeId;
+        urls.push(basePath + `domains/${nodeId}`);
         queryStatus = true;
         break;
-      case 'ipaddress':
-        basePath += 'ip_addresses/' + nodeId;
+      case 'ip':
+        urls.push(basePath + `ip_addresses/${nodeId}`);
         queryStatus = true;
         break;
-      case 'hash':
-        basePath += 'files/' + nodeId;
+      case 'md5':
+        urls.push(basePath + `files/${nodeId}`);
+        urls.push(basePath + `files/${nodeId}/behaviour_summary`);
         queryStatus = true;
         break;
     }
   } else if (source === 'PassiveTotal') {
     switch (collectionID) {
       case 'domain':
-        basePath += 'dns/passive?query=' + nodeId;
+        urls.push(basePath + `dns/passive?query=${nodeId}`);
         queryStatus = true;
         break;
-      case 'ipaddress':
-        basePath += 'services?query=' + nodeId;
+      case 'ip':
+        urls.push(basePath + `services?query=${nodeId}`);
         queryStatus = true;
         break;
     }
   } else if (source === 'GreyNoise') {
     switch (collectionID) {
-      case 'ipaddress':
-        basePath += 'community/' + nodeId;
+      case 'ip':
+        urls.push(basePath + `community/${nodeId}`);
         queryStatus = true;
         break;
     }
   } else if (source === 'censys') {
     switch (collectionID) {
-      case 'ipaddress':
-        basePath += 'v2/hosts/' + nodeId;
+      case 'ip':
+        urls.push(basePath + `v2/hosts/${nodeId}`);
         queryStatus = true;
         break;
       case 'certificate':
-        basePath += 'v1/view/certificates/' + nodeId;
+        urls.push(basePath + `v1/view/certificates/${nodeId}`);
         queryStatus = true;
         break;
     }
   } else if (source === 'BinaryEdge') {
     switch (collectionID) {
-      case 'ipaddress':
-        basePath += 'query/ip/' + nodeId;
+      case 'ip':
+        urls.push(basePath + `query/ip/${nodeId}`);
         queryStatus = true;
         break;
       case 'domain':
-        basePath += 'query/domains/dns/' + nodeId;
+        urls.push(basePath + `query/domains/dns/${nodeId}`);
         queryStatus = true;
         break;
     }
   } else if (source === 'HybridAnalysis') {
     switch (collectionID) {
-      case 'hash':
+      case 'md5':
         queryStatus = true;
         requestMethod = false;
-        basePath += 'search/hash';
+        urls.push(basePath + 'search/hash');
         Object.assign(msgBody, { query: `hash=${nodeId}` });
         break;
-      case 'ipaddress':
+      case 'ip':
         queryStatus = true;
         requestMethod = false;
-        basePath += 'search/terms';
+        urls.push(basePath + 'search/terms');
         Object.assign(msgBody, { query: `host=${nodeId}` });
         break;
       case 'domain':
         queryStatus = true;
         requestMethod = false;
-        basePath += 'search/terms';
+        urls.push(basePath + 'search/terms');
         Object.assign(msgBody, { query: `domain=${nodeId}` });
         break;
     }
   } else if (source === 'Shodan') {
     switch (collectionID) {
-      case 'ipaddress':
+      case 'ip':
         queryStatus = true;
-        basePath += `/shodan/host/${nodeId}?key=${apiKey}`;
+        urls.push(basePath + `/shodan/host/${nodeId}?key=${apiKey}`);
         break;
       case 'domain':
         queryStatus = true;
-        basePath += `/dns/domain/${nodeId}?key=${apiKey}`;
+        urls.push(basePath + `/dns/domain/${nodeId}?key=${apiKey}`);
         break;
     }
   } else if (source === 'AlienVault') {
     switch (collectionID) {
-      case 'ipaddress':
+      case 'ip':
         queryStatus = true;
-        basePath += `indicators/IPv4/${nodeId}/general`;
+        urls.push(basePath + `indicators/IPv4/${nodeId}/general`);
         break;
       case 'domain':
         queryStatus = true;
-        basePath += `indicators/domain/${nodeId}/general`;
+        urls.push(basePath + `indicators/domain/${nodeId}/general`);
         break;
-      case 'hash':
+      case 'md5':
         queryStatus = true;
-        basePath += `indicators/file/${nodeId}/analysis`;
+        urls.push(basePath + `indicators/file/${nodeId}/analysis`);
         break;
     }
   } else if (source === 'MalwareBazaar') {
     switch (collectionID) {
-      case 'hash':
+      case 'md5':
         queryStatus = true;
         requestMethod = false;
+        urls.push(basePath);
         Object.assign(msgBody, {
           query: `query=get_info&hash=${nodeId}`,
         });
     }
   } else if (source === 'Triage') {
     switch (collectionID) {
-      case 'hash':
+      case 'md5':
         queryStatus = true;
-        basePath += `search?query=md5:${nodeId}`;
+        urls.push(basePath + `search?query=md5:${nodeId}`);
         break;
       case 'domain':
         queryStatus = true;
-        basePath += `search?query=domain:${nodeId}`;
+        urls.push(basePath + `search?query=domain:${nodeId}`);
         break;
-      case 'ipaddress':
+      case 'ip':
         queryStatus = true;
-        basePath += `search?query=ip:${nodeId}`;
+        urls.push(basePath + `search?query=ip:${nodeId}`);
         break;
     }
   }
@@ -458,10 +464,29 @@ function srcLookup(object, source) {
     headers: requestHeaders,
   };
 
-  if (queryStatus) obj[source] = options;
-  options.data = msgBody;
+  if (queryStatus) {
+    options.data = msgBody;
+    obj[source]['options'] = options;
+    obj[source]['urls'] = urls;
+    return obj;
+  }
+}
 
-  return obj;
+function getRequestUrls(options) {
+  let arr = [];
+  options.forEach((e) => {
+    for (let [key, value] of Object.entries(e)) {
+      let { urls, options } = value;
+      urls.forEach((u) => {
+        let o = Object.assign({}, options);
+        let d = {};
+        o.path = u;
+        d[`${key}`] = o;
+        arr.push(d);
+      });
+    }
+  });
+  return arr;
 }
 
 function getRequest(options) {

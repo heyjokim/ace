@@ -19,11 +19,18 @@ saveSettingsBtn.addEventListener('click', () => {
 flags.forEach((e) => {
   e.addEventListener('click', () => {
     let tools = e.id;
-    window.portgasAPI.toolGetStatus().then((x) => {
-      let obj = {};
-      obj[`active.${tools}`] = !x[tools];
-      window.portgasAPI.toolSetStatus(obj);
-    });
+    window.portgasAPI
+      .toolGetStatus()
+      .then((x) => {
+        let obj = {};
+        obj[`active.${tools}`] = !x[tools];
+        window.portgasAPI.toolSetStatus(obj);
+      })
+      .catch((err) => {
+        let obj = {};
+        obj[`active.${tools}`] = true;
+        window.portgasAPI.toolSetStatus(obj);
+      });
   });
 });
 

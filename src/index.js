@@ -7,6 +7,7 @@ const navList = document.getElementById('nav-list');
 const rWindow = document.getElementById('result-rendered');
 const loader = document.querySelector('.loader');
 const btnDownload = document.getElementById('home-download');
+const searchOperator = document.getElementById('search-op');
 
 window.addEventListener('contextmenu', (e) => {
   e.preventDefault();
@@ -47,13 +48,19 @@ btnDownload.addEventListener('click', async () => {
 });
 
 btnSearch.addEventListener('click', () => {
+  let searchOp = searchOperator.value;
   rWindow.innerHTML = '';
   const searchQuery = searchTerm.value.trim();
 
   if (!searchQuery) {
     return;
   }
-  let indicatorType = classifyIndicator(searchQuery);
+  let indicatorType = {};
+  if (searchOp === 'any') {
+    indicatorType = classifyIndicator(searchQuery);
+  } else {
+    indicatorType[searchOp] = searchQuery;
+  }
   let result = window.portgasAPI.lookupIOC(indicatorType);
   createTree(result);
 });
@@ -73,13 +80,13 @@ function classifyIndicator(ioc) {
   let result = {};
   let x = ioc.replaceAll('[.]', '.');
   let reIPv4 = /^\d+\.\d+\.\d+\.\d+$/i;
-  let reHash = /^[A-Fa-f0-9]{32,}$/i;
+  let reMd5Hash = /^[A-Fa-f0-9]{32,}$/i;
   let reCertificate = /^[A-Fa-f0-9]{64}$/i; // TODO: will fix this later
 
   if (reIPv4.test(x)) {
-    result['ipaddress'] = x;
-  } else if (reHash.test(x)) {
-    result['hash'] = x;
+    result['ip'] = x;
+  } else if (reMd5Hash.test(x)) {
+    result['md5'] = x;
   } else if (reCertificate.test(x)) {
     result['certificate'] = x;
   } else {
