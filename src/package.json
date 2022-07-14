@@ -1,6 +1,6 @@
 {
   "name": "ace",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Network indicator lookup utility",
   "main": "main.js",
   "projectUrl": "https://github.com/heyjokim/ace",
