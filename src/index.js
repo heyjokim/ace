@@ -4,8 +4,7 @@ const btnSettings = document.getElementById('settings-btn');
 const btnRefresh = document.getElementById('home-fresh');
 const resultWindow = document.getElementById('intel-result');
 const navList = document.getElementById('nav-list');
-const rWindow = document.getElementById('result-rendered');
-const loader = document.querySelector('.loader');
+const tabGroup = document.querySelector('.tab');
 const btnDownload = document.getElementById('home-download');
 const searchOperator = document.getElementById('search-op');
 
@@ -48,8 +47,9 @@ btnDownload.addEventListener('click', async () => {
 });
 
 btnSearch.addEventListener('click', () => {
+  $('.tab').empty();
+  $('#intel-result').empty();
   let searchOp = searchOperator.value;
-  rWindow.innerHTML = '';
   const searchQuery = searchTerm.value.trim();
 
   if (!searchQuery) {
@@ -62,7 +62,15 @@ btnSearch.addEventListener('click', () => {
     indicatorType[searchOp] = searchQuery;
   }
   let result = window.portgasAPI.lookupIOC(indicatorType);
-  createTree(result);
+  for (let [key, value] of Object.entries(result)) {
+    let tabNodes = `<button class="tablinks" onclick="loadResults(event, '${key}')">${key}</button>`;
+    tabGroup.innerHTML += tabNodes;
+    let tabResults = `results-${key}`;
+    resultWindow.innerHTML += `<pre id='${tabResults}' class="tabcontent"></pre>`;
+    let dataStore = document.getElementById(tabResults);
+    dataStore.innerText = JSON.stringify(value, null, 2);
+    tabGroup.style.display = 'block';
+  }
 });
 
 btnRefresh.addEventListener('click', () => {
@@ -75,6 +83,19 @@ searchTerm.addEventListener('keypress', (event) => {
     btnSearch.click();
   }
 });
+
+function loadResults(event, source) {
+  let tabContent = document.getElementsByClassName('tabcontent');
+  for (let i = 0; i < tabContent.length; i++) {
+    tabContent[i].style.display = 'none';
+  }
+  let tabLinks = document.getElementsByClassName('tablinks');
+  for (let i = 0; i < tabLinks.length; i++) {
+    tabLinks[i].className = tabLinks[i].className.replace(' active', '');
+  }
+  document.getElementById(`results-${source}`).style.display = 'block';
+  event.currentTarget.className += ' active';
+}
 
 function classifyIndicator(ioc) {
   let result = {};
@@ -97,7 +118,7 @@ function classifyIndicator(ioc) {
 }
 
 $(window).on('load', () => {
-  loader.style.display = 'none';
+  tabGroup.style.display = 'none';
   window.portgasAPI
     .toolGetStatus()
     .then((result) => {
@@ -123,14 +144,6 @@ navList.addEventListener('click', (event) => {
       break;
   }
 });
-
-function createTree(object) {
-  rWindow.innerHTML = '';
-
-  const tree = jsonview.create(object);
-  jsonview.render(tree, rWindow);
-  jsonview.expand(tree);
-}
 
 function convertEpoch(i) {
   if (i < 10000000000) {
