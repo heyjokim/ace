@@ -113,7 +113,7 @@ function createWindow() {
   const menu = Menu.buildFromTemplate(MENUTEMPLATE);
   Menu.setApplicationMenu(menu);
 
-  // mainWindow.openDevTools({ mode: 'detach' });
+  mainWindow.openDevTools({ mode: 'detach' });
   mainWindow.loadFile('index.html');
 
   ipcMain.handle('dialog:downloadResults', dowloadResults);
@@ -330,6 +330,7 @@ function srcLookup(object, source) {
     switch (collectionID) {
       case 'domain':
         urls.push(basePath + `domains/${nodeId}`);
+        urls.push(basePath + `resolutions/${nodeId}`);
         queryStatus = true;
         break;
       case 'ip':
@@ -345,11 +346,25 @@ function srcLookup(object, source) {
   } else if (source === 'PassiveTotal') {
     switch (collectionID) {
       case 'domain':
+        urls.push(basePath + `cards/summary?query=${nodeId}`);
         urls.push(basePath + `dns/passive?query=${nodeId}`);
+        urls.push(basePath + `dns/search/keyword?query=${nodeId}`);
+        urls.push(basePath + `actions/classification?query=${nodeId}`);
+        urls.push(basePath + `actions/ever-compromised?query=${nodeId}`);
+        urls.push(basePath + `actions/dynamic-dns?query=${nodeId}`);
+        urls.push(basePath + `actions/sinkhole?query=${nodeId}`);
+        urls.push(basePath + `actions/tags?query=${nodeId}`);
+        urls.push(basePath + `enrichment/osint?query=${nodeId}`);
+        urls.push(basePath + `ssl-certificate/history?query=${nodeId}`);
+        urls.push(basePath + `whois?query=${nodeId}`);
         queryStatus = true;
         break;
       case 'ip':
+        urls.push(basePath + `cards/summary?query=${nodeId}`);
         urls.push(basePath + `services?query=${nodeId}`);
+        urls.push(basePath + `enrichment/osint?query=${nodeId}`);
+        urls.push(basePath + `ssl-certificate/history?query=${nodeId}`);
+        urls.push(basePath + `whois?query=${nodeId}`);
         queryStatus = true;
         break;
     }
