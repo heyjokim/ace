@@ -198,7 +198,9 @@ function createWindow() {
     Promise.allSettled(
       requestUrls.map(async (e) => {
         for (let [key, value] of Object.entries(e)) {
-          let paths = value.path.replaceAll('.', '-').replace(/\?key=.+/, '');
+          let paths = value.path
+            .replaceAll('.', '-')
+            .replace(/\?(key|token)=.+/, '');
           let intelResponse = await getRequest(value);
           store.set(`results.${key}.${paths}`, intelResponse);
         }
@@ -320,6 +322,13 @@ function srcLookup(object, source) {
       basePath = '/v0/';
       Object.assign(requestHeaders, {
         Authorization: `Bearer ${apiKey}`,
+      });
+      break;
+    case 'IPInfo':
+      baseHost = 'ipinfo.io';
+      basePath = '/';
+      Object.assign(requestHeaders, {
+        Accept: 'application/json',
       });
       break;
     default:
@@ -468,6 +477,12 @@ function srcLookup(object, source) {
         queryStatus = true;
         urls.push(basePath + `search?query=ip:${nodeId}`);
         break;
+    }
+  } else if (source === 'IPInfo') {
+    switch (collectionID) {
+      case 'ip':
+        queryStatus = true;
+        urls.push(basePath + `${nodeId}?token=${apiKey}`);
     }
   }
 
