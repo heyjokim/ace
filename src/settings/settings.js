@@ -55,3 +55,20 @@ window.addEventListener('load', () => {
     })
     .catch((err) => console.log(err));
 });
+
+function toggleAll(status) {
+  window.portgasAPI
+    .toolGetStatus()
+    .then((x) => {
+      for (let [key, value] of Object.entries(x)) {
+        let obj = {};
+        if (status === 'disable') {
+          obj[`active.${key}`] = false;
+        } else {
+          obj[`active.${key}`] = true;
+        }
+        window.portgasAPI.toolSetStatus(obj);
+      }
+    })
+    .then(() => location.reload());
+}

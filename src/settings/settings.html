@@ -6,23 +6,17 @@
       http-equiv="Content-Security-Policy"
       content="script-src 'self' 'unsafe-inline';"
     />
-    <link rel="stylesheet" href="../css/photon.min.css" />
-    <link rel="stylesheet" href="./settings.css" />
+    <link rel="stylesheet" text="text/css" href="../css/photon.min.css" />
+    <link rel="stylesheet" text="text/css" href="./settings.css" />
   </head>
   <body>
     <div id="window" class="window">
       <header class="toolbar toolbar-header">
         <div class="toolbar-actions">
           <div class="btn-group">
-            <a href="../index.html">
-              <button
-                class="btn btn-default"
-                id="settingsHomeBtn"
-                type="button"
-              >
-                <span class="icon icon-home"></span>
-              </button>
-            </a>
+              <button class="btn btn-default" id="settingsHomeBtn" type="button" onclick="window.location='../index.html'"><span class="icon icon-home"></span></button>
+              <button class="btn btn-default" id="settingsEnableBtn" type="button" onclick="toggleAll('enable')"><span class="icon icon-eye"></span></button>
+              <button class="btn btn-default" id="settingsDisableBtn" type="button" onclick="toggleAll('disable')"><span class="icon icon-block"></span></button>
           </div>
         </div>
       </header>
@@ -128,29 +122,40 @@
           placeholder="API"
         /><label class="switch" id="switch-Triage"><input class="switch-tgl" type='checkbox' id="Triage"><span class='slider round'></span></label>
       </div>
+      <div class="sub-form">
+        <h4>IPInfo</span></h4>
+        <input
+          id="api-IPInfo"
+          class="osint-field"
+          type="password"
+          value=""
+          placeholder="API"
+        /><label class="switch" id="switch-IPInfo"><input class="switch-tgl" type='checkbox' id="IPInfo"><span class='slider round'></span></label>
+      </div>
       <!-- End of listed tools -->
-      <!-- Start of footer section here -->
-      <footer class="toolbar toolbar-footer">
-        <div class="toolbar-actions">
-          <button
-            type="button"
-            class="btn btn-form btn-negative"
-            id="canceSettingsBtn"
-            onclick="window.history.go(-1); return false;"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="btn btn-form btn-primary"
-            id="saveSettingsBtn"
-          >
-            Save
-          </button>
-        </div>
-      </footer>
-      <!-- End of footer section -->
+
     </div>
+          <!-- Start of footer section here -->
+          <footer class="toolbar toolbar-footer">
+            <div class="toolbar-actions">
+              <button
+                type="button"
+                class="btn btn-form btn-negative"
+                id="canceSettingsBtn"
+                onclick="window.history.go(-1); return false;"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                class="btn btn-form btn-primary"
+                id="saveSettingsBtn"
+              >
+                Save
+              </button>
+            </div>
+          </footer>
+          <!-- End of footer section -->
     <script src="./settings.js"></script>
   </body>
 </html>
