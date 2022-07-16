@@ -90,6 +90,11 @@ searchTerm.addEventListener('keypress', (event) => {
 });
 
 function loadResults(event, source) {
+  filteredViewNodes.forEach((e) => {
+    let viewElem = document.getElementById(`filtered-${e}`);
+    viewElem.style.display = 'none';
+  });
+
   let tabContent = document.getElementsByClassName('tabcontent');
   let filteredContent = document.querySelector('.filtered-content');
 
@@ -209,6 +214,8 @@ function filteredView(elem, node) {
     'file_read',
     'directory_enumerated',
     'file_failed',
+    'files_attribute_changed',
+    'files_deleted',
   ];
   const nodeNetwork = [
     'dns_lookups',
@@ -226,6 +233,7 @@ function filteredView(elem, node) {
   ];
   const nodeRegistry = [
     'registry_keys_opened',
+    'registry_keys_deleted',
     'registry_keys_set',
     'read_keys',
     'regkey_opened',
@@ -240,6 +248,10 @@ function filteredView(elem, node) {
     'processes_tree',
     'modules_loaded',
     'dll_loaded',
+    'mutexes_opened',
+    'calls_highlighted',
+    'services_started',
+    'processes',
   ];
 
   let filteredResults;
