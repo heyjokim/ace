@@ -8,6 +8,7 @@ const tabGroup = document.querySelector('.tab');
 const btnDownload = document.getElementById('home-download');
 const searchOperator = document.getElementById('search-op');
 const btnViews = document.querySelectorAll('.btn-views > button');
+const filteredViewNodes = ['file', 'network', 'registry', 'process'];
 
 window.addEventListener('contextmenu', (e) => {
   e.preventDefault();
@@ -62,6 +63,9 @@ btnSearch.addEventListener('click', () => {
   } else {
     indicatorType[searchOp] = searchQuery;
   }
+  filteredViewNodes.forEach((e) => {
+    resultWindow.innerHTML += `<pre class="filtered-content" id=filtered-${e}></pre>`;
+  });
   let result = window.portgasAPI.lookupIOC(indicatorType);
   for (let [key, value] of Object.entries(result)) {
     let tabNodes = `<button class="tablinks" onclick="loadResults(event, '${key}')">${key}</button>`;
@@ -173,17 +177,28 @@ function int2ip(ipInt) {
 
 btnViews.forEach((e) => {
   e.addEventListener('click', () => {
-    let activeTab = document.querySelector('.tablinks.active');
-    let activeResults = document.getElementById(
-      `results-${activeTab.innerHTML}`
-    );
-    filteredView(activeResults, e.title);
+    let results = document.querySelectorAll('.tabcontent');
+    let obj = {};
+    results.forEach((r) => {
+      Object.assign(obj, JSON.parse(r.innerText));
+    });
+
+    filteredView(obj, e.title);
   });
 });
 
 function filteredView(elem, node) {
-  elem.style.display = 'none';
-  let results = JSON.parse(elem.innerText);
+  let tabResults = document.querySelectorAll('.tabcontent');
+  if (tabResults) {
+    tabResults.forEach((e) => {
+      e.style.display = 'none';
+    });
+  }
+  filteredViewNodes.forEach((e) => {
+    let viewElem = document.getElementById(`filtered-${e}`);
+    viewElem.style.display = 'none';
+  });
+  let results = elem;
   const nodeFile = [
     'files_written',
     'files_dropped',
@@ -201,6 +216,13 @@ function filteredView(elem, node) {
     'ja3_digests',
     'tls',
     'malware_config',
+    'jarm',
+    'network',
+    'subject_alternative_name',
+    'domains',
+    'hostnames',
+    'ja3s',
+    'names',
   ];
   const nodeRegistry = [
     'registry_keys_opened',
@@ -239,9 +261,8 @@ function filteredView(elem, node) {
   if (!filteredResults) {
     return;
   }
-  resultWindow.innerHTML += `<pre class="filtered-content"></pre>`;
-  let dataStore = document.querySelector('.filtered-content');
-  dataStore.style.display = 'none';
+
+  let dataStore = document.getElementById(`filtered-${node}`);
   dataStore.innerText = JSON.stringify(filteredResults, null, 2);
   dataStore.style.display = 'block';
 }

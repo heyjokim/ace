@@ -141,6 +141,9 @@ function createWindow() {
     return store.get(`api.${object}`);
   });
 
+  ipcMain.on('results:get', (event) => {
+    return store.get('results');
+  });
   ipcMain.on('search:iocResults', (event) => {
     event.returnValue = store.get('results');
   });
@@ -331,6 +334,27 @@ function srcLookup(object, source) {
         Accept: 'application/json',
       });
       break;
+    case 'ThreatMiner':
+      baseHost = 'api.threatminer.org';
+      basePath = '/v2/';
+      Object.assign(requestHeaders, {
+        Accept: 'application/json',
+      });
+      break;
+    case 'CIRCL':
+      baseHost = 'hashlookup.circl.lu';
+      basePath = '/';
+      Object.assign(requestHeaders, {
+        Accept: 'application/json',
+      });
+      break;
+    case 'Robtex':
+      baseHost = 'freeapi.robtex.com';
+      basePath = '/';
+      Object.assign(requestHeaders, {
+        Accept: 'application/json',
+      });
+      break;
     default:
       console.log(`unsupported ${source}`);
   }
@@ -484,7 +508,57 @@ function srcLookup(object, source) {
         queryStatus = true;
         urls.push(basePath + `${nodeId}?token=${apiKey}`);
     }
+  } else if (source === 'ThreatMiner') {
+    switch (collectionID) {
+      case 'domain':
+        queryStatus = true;
+        urls.push(basePath + `domain.php?q=${nodeId}&rt=1`);
+        urls.push(basePath + `domain.php?q=${nodeId}&rt=2`);
+        urls.push(basePath + `domain.php?q=${nodeId}&rt=3`);
+        urls.push(basePath + `domain.php?q=${nodeId}&rt=4`);
+        urls.push(basePath + `domain.php?q=${nodeId}&rt=5`);
+        // urls.push(basePath + `domain.php?q=${nodeId}&rt=6`);
+        break;
+      case 'ip':
+        queryStatus = true;
+        urls.push(basePath + `host.php?q=${nodeId}&rt=1`);
+        urls.push(basePath + `host.php?q=${nodeId}&rt=2`);
+        urls.push(basePath + `host.php?q=${nodeId}&rt=3`);
+        urls.push(basePath + `host.php?q=${nodeId}&rt=4`);
+        urls.push(basePath + `host.php?q=${nodeId}&rt=5`);
+        break;
+      case 'md5':
+        queryStatus = true;
+        urls.push(basePath + `sample.php?q=${nodeId}&rt=1`);
+        urls.push(basePath + `sample.php?q=${nodeId}&rt=2`);
+        urls.push(basePath + `sample.php?q=${nodeId}&rt=3`);
+        urls.push(basePath + `sample.php?q=${nodeId}&rt=4`);
+        urls.push(basePath + `sample.php?q=${nodeId}&rt=5`);
+        urls.push(basePath + `sample.php?q=${nodeId}&rt=6`);
+        break;
+    }
+  } else if (source === 'CIRCL') {
+    switch (collectionID) {
+      case 'md5':
+        queryStatus = true;
+        urls.push(basePath + `lookup/md5/${nodeId}`);
+        break;
+    }
   }
+  // Response is too slow
+  // else if (source === 'Robtex') {
+  //   switch (collectionID) {
+  //     case 'ip':
+  //       queryStatus = true;
+  //       urls.push(basePath + `ipquery/${nodeId}`);
+  //       urls.push(basePath + `pdns/reverse/${nodeId}`);
+  //       break;
+  //     case 'domain':
+  //       queryStatus = true;
+  //       urls.push(basePath + `pdns/forward/${nodeId}`);
+  //       break;
+  //   }
+  // }
 
   let options = {
     hostname: baseHost,
