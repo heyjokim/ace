@@ -7,6 +7,7 @@ const navList = document.getElementById('nav-list');
 const tabGroup = document.querySelector('.tab');
 const btnDownload = document.getElementById('home-download');
 const searchOperator = document.getElementById('search-op');
+const btnViews = document.querySelectorAll('.btn-views > button');
 
 window.addEventListener('contextmenu', (e) => {
   e.preventDefault();
@@ -86,6 +87,12 @@ searchTerm.addEventListener('keypress', (event) => {
 
 function loadResults(event, source) {
   let tabContent = document.getElementsByClassName('tabcontent');
+  let filteredContent = document.querySelector('.filtered-content');
+
+  if (filteredContent) {
+    filteredContent.style.display = 'none';
+  }
+
   for (let i = 0; i < tabContent.length; i++) {
     tabContent[i].style.display = 'none';
   }
@@ -162,4 +169,73 @@ function int2ip(ipInt) {
     '.' +
     (ipInt & 255)
   );
+}
+
+btnViews.forEach((e) => {
+  e.addEventListener('click', () => {
+    let activeTab = document.querySelector('.tablinks.active');
+    let activeResults = document.getElementById(
+      `results-${activeTab.innerHTML}`
+    );
+    filteredView(activeResults, e.title);
+  });
+});
+
+function filteredView(elem, node) {
+  elem.style.display = 'none';
+  let results = JSON.parse(elem.innerText);
+  const nodeFile = ['files_written', 'files_dropped', 'files_opened'];
+  const nodeNetwork = ['dns_lookups', 'ip_traffic', 'ja3_digests', 'tls'];
+  const nodeRegistry = ['registry_keys_opened', 'registry_keys_set'];
+  const nodeProcess = [
+    'command_executions',
+    'processes_created',
+    'mutexes_created',
+    'processes_injected',
+    'processes_terminated',
+    'processes_tree',
+    'modules_loaded',
+  ];
+
+  let filteredResults;
+  switch (node) {
+    case 'file':
+      filteredResults = parseJson(results, nodeFile);
+      break;
+    case 'network':
+      filteredResults = parseJson(results, nodeNetwork);
+      break;
+    case 'registry':
+      filteredResults = parseJson(results, nodeRegistry);
+      break;
+    case 'process':
+      filteredResults = parseJson(results, nodeProcess);
+      break;
+  }
+
+  if (!filteredResults) {
+    return;
+  }
+  resultWindow.innerHTML += `<pre class="filtered-content"></pre>`;
+  let dataStore = document.querySelector('.filtered-content');
+  dataStore.style.display = 'none';
+  dataStore.innerText = JSON.stringify(filteredResults, null, 2);
+  dataStore.style.display = 'block';
+}
+
+function parseJson(j, arr) {
+  let results = {};
+
+  function iterate(keys) {
+    for (let [key, value] of Object.entries(keys)) {
+      if (typeof value === 'object' && value !== null) {
+        iterate(value);
+      }
+      if (arr.includes(key)) {
+        results[key] = value;
+      }
+    }
+  }
+  iterate(j);
+  return results;
 }
