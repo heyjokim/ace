@@ -28,7 +28,7 @@ window.addEventListener('contextmenu', (e) => {
     return;
   }
 
-  window.portgasAPI.showContextMenu(s);
+  // window.portgasAPI.showContextMenu(s);
   window.portgasAPI.returnContextMenuData((event, type, object) => {
     let d;
     switch (type) {
