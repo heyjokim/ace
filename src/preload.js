@@ -14,4 +14,5 @@ contextBridge.exposeInMainWorld('portgasAPI', {
   showContextMenu: (object) => ipcRenderer.send('show-context-menu', object),
   returnContextMenuData: (type, object) =>
     ipcRenderer.once('context-menu-command', type, object),
+  getResults: () => ipcRenderer.sendSync('results:get'),
 });
