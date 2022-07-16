@@ -12,13 +12,19 @@
     <div class="window" id="window">
         <header class="toolbar toolbar-header">
             <div class="toolbar-actions">
+                <div class="btn-head">
                 <div class="btn-group">
-                    <button class="btn btn-default" id="home-go" type="button" title="home">
-                        <span class="icon icon-home"></span>
-                    </button>
+                    <button class="btn btn-default" id="home-go" type="button" title="home"><span class="icon icon-home"></span></button>
                     <button class="btn btn-default" id="settings-btn" type="button" title="settings" onclick="window.location='settings/settings.html'"><span class="icon icon-cog"></span></button>
                     <button class="btn btn-default" id="home-fresh" type="button" title="refresh"><span class="icon icon-cw"></span></button>
                     <button class="btn btn-default" id="home-download" type="button" title="download"><span class="icon icon-download"></span></button>
+                </div>
+                <div class="btn-views">
+                    <button class="btn btn-default" id="home-file" type="button" title="file"><span class="icon icon-doc-text"></span></button>
+                    <button class="btn btn-default" id="home-network" type="button" title="network"><span class="icon icon-signal"></span></button>
+                    <button class="btn btn-default" id="home-registry" type="button" title="registry"><span class="icon icon-database"></span></button>
+                    <button class="btn btn-default" id="home-process" type="button" title="process"><span class="icon icon-flow-cascade"></span></button>
+                </div>
                 </div>
             </div>
         </header>
@@ -36,7 +42,7 @@
 
         <div id="body-window">
         <nav class="nav-group nav-sidebar">
-            <h5 class="nav-group-title">Tools</h5>
+            <h5 class="nav-group-title">Enabled</h5>
             <hr>
             <ul id="nav-list"></ul>
         </nav>
