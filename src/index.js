@@ -184,9 +184,31 @@ btnViews.forEach((e) => {
 function filteredView(elem, node) {
   elem.style.display = 'none';
   let results = JSON.parse(elem.innerText);
-  const nodeFile = ['files_written', 'files_dropped', 'files_opened'];
-  const nodeNetwork = ['dns_lookups', 'ip_traffic', 'ja3_digests', 'tls'];
-  const nodeRegistry = ['registry_keys_opened', 'registry_keys_set'];
+  const nodeFile = [
+    'files_written',
+    'files_dropped',
+    'files_opened',
+    'read_files',
+    'file_exists',
+    'file_opened',
+    'file_read',
+    'directory_enumerated',
+    'file_failed',
+  ];
+  const nodeNetwork = [
+    'dns_lookups',
+    'ip_traffic',
+    'ja3_digests',
+    'tls',
+    'malware_config',
+  ];
+  const nodeRegistry = [
+    'registry_keys_opened',
+    'registry_keys_set',
+    'read_keys',
+    'regkey_opened',
+    'regkey_read',
+  ];
   const nodeProcess = [
     'command_executions',
     'processes_created',
@@ -195,6 +217,7 @@ function filteredView(elem, node) {
     'processes_terminated',
     'processes_tree',
     'modules_loaded',
+    'dll_loaded',
   ];
 
   let filteredResults;
@@ -232,7 +255,11 @@ function parseJson(j, arr) {
         iterate(value);
       }
       if (arr.includes(key)) {
-        results[key] = value;
+        if (Object.hasOwn(results, key)) {
+          results[key] = [...results[key], value];
+        } else {
+          results[key] = value;
+        }
       }
     }
   }
