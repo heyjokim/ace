@@ -113,7 +113,7 @@ function createWindow() {
   const menu = Menu.buildFromTemplate(MENUTEMPLATE);
   Menu.setApplicationMenu(menu);
 
-  // mainWindow.openDevTools({ mode: 'detach' });
+  mainWindow.openDevTools({ mode: 'detach' });
   mainWindow.loadFile('index.html');
 
   ipcMain.handle('dialog:downloadResults', dowloadResults);
@@ -467,14 +467,20 @@ function srcLookup(object, source) {
       case 'ip':
         queryStatus = true;
         urls.push(basePath + `indicators/IPv4/${nodeId}/general`);
+        urls.push(basePath + `indicators/IPv4/${nodeId}/malware`);
+        urls.push(basePath + `indicators/IPv4/${nodeId}/url_list`);
+        urls.push(basePath + `indicators/IPv4/${nodeId}/passive_dns`);
         break;
       case 'domain':
         queryStatus = true;
         urls.push(basePath + `indicators/domain/${nodeId}/general`);
+        urls.push(basePath + `indicators/hostname/${nodeId}/general`);
+        urls.push(basePath + `indicators/url/${nodeId}/general`);
         break;
       case 'md5':
         queryStatus = true;
         urls.push(basePath + `indicators/file/${nodeId}/analysis`);
+        urls.push(basePath + `indicators/file/${nodeId}/general`);
         break;
     }
   } else if (source === 'MalwareBazaar') {
