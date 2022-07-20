@@ -230,6 +230,8 @@ function filteredView(elem, node) {
     'hostnames',
     'ja3s',
     'names',
+    'http_conversations',
+    'url',
   ];
   const nodeRegistry = [
     'registry_keys_opened',
@@ -284,7 +286,11 @@ function parseJson(j, arr) {
 
   function iterate(keys) {
     for (let [key, value] of Object.entries(keys)) {
-      if (typeof value === 'object' && value !== null) {
+      if (
+        typeof value === 'object' &&
+        value !== null &&
+        Array.isArray(value) === false
+      ) {
         iterate(value);
       }
       if (arr.includes(key)) {
