@@ -355,6 +355,14 @@ function srcLookup(object, source) {
         Accept: 'application/json',
       });
       break;
+    case 'ThreatFox':
+      baseHost = 'threatfox-api.abuse.ch';
+      basePath = '/api/v1/';
+      Object.assign(requestHeaders, {
+        'API-KEY': apiKey,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      });
+      break;
     default:
       console.log(`unsupported ${source}`);
   }
@@ -548,6 +556,33 @@ function srcLookup(object, source) {
       case 'md5':
         queryStatus = true;
         urls.push(basePath + `lookup/md5/${nodeId}`);
+        break;
+    }
+  } else if (source === 'ThreatFox') {
+    switch (collectionID) {
+      case 'md5':
+        queryStatus = true;
+        requestMethod = false;
+        urls.push(basePath);
+        Object.assign(msgBody, {
+          query: `{"query": "search_hash", "hash": "${nodeId}"}`,
+        });
+        break;
+      case 'domain':
+        queryStatus = true;
+        requestMethod = false;
+        urls.push(basePath);
+        Object.assign(msgBody, {
+          query: `{"query": "search_ioc", "search_term": "${nodeId}"}`,
+        });
+        break;
+      case 'ip':
+        queryStatus = true;
+        requestMethod = false;
+        urls.push(basePath);
+        Object.assign(msgBody, {
+          query: `{"query": "search_ioc", "search_term": "${nodeId}"}`,
+        });
         break;
     }
   }
